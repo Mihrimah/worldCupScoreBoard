@@ -1,8 +1,9 @@
 import org.example.Scoreboard;
 import org.example.TeamType;
+import org.example.exceptions.DuplicateMatchInsertException;
 import org.example.exceptions.MatchNotStartedException;
 import org.example.exceptions.MatchNotFoundException;
-import org.example.exceptions.DuplicateMatchStartException;
+import org.example.exceptions.OngoingMatchStartException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -131,7 +132,7 @@ public class WorldCupScoreboardTest {
     }
 
     @Test
-    @DisplayName("Given: A match that has already been started. When: Attempting to start the same match again. Then: DuplicateMatchStartException is thrown.")
+    @DisplayName("Given: A match that has already been inserted. When: Attempting to insert the same match again. Then: DuplicateMatchInsertException is thrown.")
     public void test9(){
         String homeTeam = "TeamA";
         String awayTeam = "TeamB";
@@ -139,11 +140,19 @@ public class WorldCupScoreboardTest {
         scoreboard.insertMatch(homeTeam, awayTeam);
 
         assertTrue(scoreboard.containsMatch(homeTeam, awayTeam));
-        assertThrows(DuplicateMatchStartException.class, () -> scoreboard.insertMatch(homeTeam, awayTeam));
-        assertThrows(DuplicateMatchStartException.class, () -> scoreboard.insertMatch(awayTeam, homeTeam));
+        assertThrows(DuplicateMatchInsertException.class, () -> scoreboard.insertMatch(homeTeam, awayTeam));
 
+    }
+
+    @Test
+    @DisplayName("Given: A match that has already been started. When: Attempting to start the same match again. Then: OngoingMatchStartException is thrown.")
+    public void test10(){
+        String homeTeam = "TeamA";
+        String awayTeam = "TeamB";
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.insertMatch(homeTeam, awayTeam);
         scoreboard.startMatch(homeTeam, awayTeam);
-        assertThrows(DuplicateMatchStartException.class, () -> scoreboard.startMatch(homeTeam, awayTeam));
+        assertThrows(OngoingMatchStartException.class, () -> scoreboard.startMatch(homeTeam, awayTeam));
     }
 
 }

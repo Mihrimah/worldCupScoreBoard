@@ -1,8 +1,9 @@
 package org.example;
 
+import org.example.exceptions.DuplicateMatchInsertException;
 import org.example.exceptions.MatchNotStartedException;
 import org.example.exceptions.MatchNotFoundException;
-import org.example.exceptions.DuplicateMatchStartException;
+import org.example.exceptions.OngoingMatchStartException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class Scoreboard {
 
     public void insertMatch(String homeTeam, String awayTeam) {
         if (matches.contains(homeTeam + "-" + awayTeam) || matches.contains(awayTeam + "-" + homeTeam)) {
-            throw new DuplicateMatchStartException(homeTeam, awayTeam);
+            throw new DuplicateMatchInsertException(homeTeam, awayTeam);
         }
         matches.add(homeTeam + "-" + awayTeam);
     }
@@ -30,7 +31,7 @@ public class Scoreboard {
 
     public void startMatch(String homeTeam, String awayTeam) {
         if (scores.containsKey(homeTeam + "-" + awayTeam) || scores.containsKey(awayTeam + "-" + homeTeam)){
-            throw new DuplicateMatchStartException(homeTeam, awayTeam);
+            throw new OngoingMatchStartException(homeTeam, awayTeam);
         }
         scores.put(homeTeam + "-" + awayTeam, new Score());
     }
