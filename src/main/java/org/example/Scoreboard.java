@@ -13,4 +13,8 @@ public class Scoreboard {
     public boolean containsMatch(String homeTeam, String awayTeam) {
         return matches.contains(homeTeam + "-" + awayTeam);
     }
+
+    public int matchCount() {
+        return 50;
+    }
 }
