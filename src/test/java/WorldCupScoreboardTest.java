@@ -1,4 +1,6 @@
 import org.example.Scoreboard;
+import org.example.exceptions.MatchIsNotStartedException;
+import org.example.exceptions.MatchNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,8 +43,30 @@ public class WorldCupScoreboardTest {
     }
 
     @Test
-    @DisplayName("Given: A match. When: Insert the match into the scoreboard and start it. Then: The match score must start with 0-0.")
+    @DisplayName("Given: A match. When: Get the score of the match. Then: The match cannot be found is thrown.")
     public void test3() {
+        String homeTeam = "TeamA";
+        String awayTeam = "TeamB";
+
+        Scoreboard scoreboard = new Scoreboard();
+        assertThrows(MatchNotFoundException.class, () -> scoreboard.getScore(homeTeam, awayTeam));
+    }
+
+    @Test
+    @DisplayName("Given: A match. When: Insert the match into the scoreboard and get its score. Then: The match exist but not started is thrown.")
+    public void test4() {
+        String homeTeam = "TeamA";
+        String awayTeam = "TeamB";
+
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.insertMatch(homeTeam, awayTeam);
+
+        assertThrows(MatchIsNotStartedException.class, () -> scoreboard.getScore(homeTeam, awayTeam));
+    }
+
+    @Test
+    @DisplayName("Given: A match. When: Insert the match into the scoreboard and start it. Then: The match must start with score 0-0.")
+    public void test5() {
         String homeTeam = "TeamA";
         String awayTeam = "TeamB";
 
