@@ -15,6 +15,6 @@ public class Scoreboard {
     }
 
     public int matchCount() {
-        return 50;
+        return matches.size();
     }
 }
