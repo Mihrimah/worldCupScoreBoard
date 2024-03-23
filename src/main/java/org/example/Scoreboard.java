@@ -1,7 +1,8 @@
 package org.example;
 
-import org.example.exceptions.MatchIsNotStartedException;
+import org.example.exceptions.MatchNotStartedException;
 import org.example.exceptions.MatchNotFoundException;
+import org.example.exceptions.DuplicateMatchStartException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,9 @@ public class Scoreboard {
     private final Map<String, Score> scores = new HashMap<>();
 
     public void insertMatch(String homeTeam, String awayTeam) {
+        if (matches.contains(homeTeam + "-" + awayTeam) || matches.contains(awayTeam + "-" + homeTeam)) {
+            throw new DuplicateMatchStartException(homeTeam, awayTeam);
+        }
         matches.add(homeTeam + "-" + awayTeam);
     }
 
@@ -25,6 +29,9 @@ public class Scoreboard {
     }
 
     public void startMatch(String homeTeam, String awayTeam) {
+        if (scores.containsKey(homeTeam + "-" + awayTeam) || scores.containsKey(awayTeam + "-" + homeTeam)){
+            throw new DuplicateMatchStartException(homeTeam, awayTeam);
+        }
         scores.put(homeTeam + "-" + awayTeam, new Score());
     }
 
@@ -33,23 +40,26 @@ public class Scoreboard {
         if (matchIndex >= 0) {
             Score matchScore = scores.get(homeTeam + "-" + awayTeam);
             if (matchScore == null) {
-                throw new MatchIsNotStartedException(homeTeam, awayTeam);
+                throw new MatchNotStartedException(homeTeam, awayTeam);
             }
-            return matchScore.homeScore + "-" + matchScore.awayScore;
+            return homeTeam + " " + matchScore.homeScore + " - " + awayTeam + " " + matchScore.awayScore;
         } else {
             throw new MatchNotFoundException(homeTeam, awayTeam);
         }
 
     }
 
-    public void incrementHomeScore(String homeTeam, String awayTeam) {
+    public void updateScore(String homeTeam, String awayTeam, TeamType teamType) {
         int matchIndex = matches.indexOf(homeTeam + "-" + awayTeam);
         if (matchIndex >= 0) {
             Score matchScore = scores.get(homeTeam + "-" + awayTeam);
             if (matchScore == null) {
-                throw new MatchIsNotStartedException(homeTeam, awayTeam);
+                throw new MatchNotStartedException(homeTeam, awayTeam);
             }
-            matchScore.incrementHomeScore();
+            switch (teamType) {
+                case homeTeam -> matchScore.incrementHomeScore();
+                case awayTeam -> matchScore.incrementAwayScore();
+            }
         } else {
             throw new MatchNotFoundException(homeTeam, awayTeam);
         }
@@ -63,13 +73,14 @@ public class Scoreboard {
             homeScore++;
         }
 
+        public void incrementAwayScore() {
+            awayScore++;
+        }
+
         public void decrementHomeScore() {
             homeScore--;
         }
 
-        public void incrementAwayScore() {
-            awayScore++;
-        }
 
         public void decrementAwayScore() {
             awayScore--;
