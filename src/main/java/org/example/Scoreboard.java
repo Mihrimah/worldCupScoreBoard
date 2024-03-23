@@ -42,23 +42,36 @@ public class Scoreboard {
 
     }
 
+    public void incrementHomeScore(String homeTeam, String awayTeam) {
+        int matchIndex = matches.indexOf(homeTeam + "-" + awayTeam);
+        if (matchIndex >= 0) {
+            Score matchScore = scores.get(homeTeam + "-" + awayTeam);
+            if (matchScore == null) {
+                throw new MatchIsNotStartedException(homeTeam, awayTeam);
+            }
+            matchScore.incrementHomeScore();
+        } else {
+            throw new MatchNotFoundException(homeTeam, awayTeam);
+        }
+    }
+
     private static class Score {
         int homeScore = 0;
         int awayScore = 0;
 
-        public void increaseHomeScore() {
+        public void incrementHomeScore() {
             homeScore++;
         }
 
-        public void decreaseHomeScore() {
+        public void decrementHomeScore() {
             homeScore--;
         }
 
-        public void increaseAwayScore() {
+        public void incrementAwayScore() {
             awayScore++;
         }
 
-        public void decreaseAwayScore() {
+        public void decrementAwayScore() {
             awayScore--;
         }
     }

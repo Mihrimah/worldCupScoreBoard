@@ -78,4 +78,22 @@ public class WorldCupScoreboardTest {
 
         assertEquals(expectedInitialScore, scoreboard.getScore(homeTeam, awayTeam));
     }
+
+    @Test
+    @DisplayName("Given: An ongoing match. When: Update home team's score. Then: The score must be correctly updated.")
+    public void test6() {
+        String homeTeam = "TeamA";
+        String awayTeam = "TeamB";
+
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.insertMatch(homeTeam, awayTeam);
+        scoreboard.startMatch(homeTeam, awayTeam);
+
+        scoreboard.incrementHomeScore(homeTeam, awayTeam);
+
+        String expectedScore = "1-0";
+
+        assertEquals(expectedScore, scoreboard.getScore(homeTeam, awayTeam));
+    }
+
 }
