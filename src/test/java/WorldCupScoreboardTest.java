@@ -39,4 +39,19 @@ public class WorldCupScoreboardTest {
         assertTrue(scoreboard.matchCount() > 0);
         assertEquals(scoreboard.matchCount(), totalMatch);
     }
+
+    @Test
+    @DisplayName("Given: A match. When: Insert the match into the scoreboard and start it. Then: The match score must start with 0-0.")
+    public void test3() {
+        String homeTeam = "TeamA";
+        String awayTeam = "TeamB";
+
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.insertMatch(homeTeam, awayTeam);
+        scoreboard.startMatch(homeTeam, awayTeam);
+
+        String expectedInitialScore = "0-0";
+
+        assertEquals(expectedInitialScore, scoreboard.getScore(homeTeam, awayTeam));
+    }
 }

@@ -17,4 +17,11 @@ public class Scoreboard {
     public int matchCount() {
         return matches.size();
     }
+
+    public void startMatch(String homeTeam, String awayTeam) {
+    }
+
+    public String getScore(String homeTeam, String awayTeam) {
+        return "0-0";
+    }
 }
