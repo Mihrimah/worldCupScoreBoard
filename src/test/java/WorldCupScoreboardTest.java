@@ -1,6 +1,7 @@
 import org.example.Scoreboard;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WorldCupScoreboardTest {
@@ -14,6 +15,6 @@ public class WorldCupScoreboardTest {
         scoreboard.insertMatch(homeTeam, awayTeam);
 
         assertTrue(scoreboard.containsMatch(homeTeam, awayTeam));
+        assertFalse(scoreboard.containsMatch("UnknownTeamA", "UnknownTeamB"));
     }
 }
-
