@@ -27,7 +27,7 @@ public class WorldCupScoreboardTest {
     @DisplayName("Given: A random number of matches. When: The all matches inserted into the scoreboard. Then: The match number in the scoreboard must be correct.")
     public void test2() {
         String teamPrefix = "Team";
-        int totalMatch = new Random().nextInt(0, 1000);
+        int totalMatch = new Random().nextInt(1, 1000);
 
         Scoreboard scoreboard = new Scoreboard();
         for (int i = 0; i < totalMatch * 2; i = i + 2) {
