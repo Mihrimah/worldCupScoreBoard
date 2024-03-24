@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 /**
  * Represents the score of a match.

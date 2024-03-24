@@ -1,5 +1,13 @@
-import org.example.*;
 import org.example.exceptions.*;
+import org.example.manager.MatchManager;
+import org.example.manager.ScoreManager;
+import org.example.model.Match;
+import org.example.model.TeamType;
+import org.example.repository.InMemoryMatchRepository;
+import org.example.repository.MatchRepository;
+import org.example.util.MatchKeyGenerator;
+import org.example.util.MatchSummaryGenerator;
+import org.example.util.SimpleMatchKeyGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;

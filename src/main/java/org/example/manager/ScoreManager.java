@@ -1,4 +1,7 @@
-package org.example;
+package org.example.manager;
+
+import org.example.model.Match;
+import org.example.model.TeamType;
 
 /**
  * This class manages the scores of matches.

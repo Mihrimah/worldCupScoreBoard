@@ -1,9 +1,13 @@
-package org.example;
+package org.example.manager;
 
+import org.example.util.MatchKeyGenerator;
+import org.example.repository.MatchRepository;
 import org.example.exceptions.ExistingMatchConflictException;
 import org.example.exceptions.MatchAlreadyStartedException;
 import org.example.exceptions.MatchNotFoundException;
 import org.example.exceptions.TeamAlreadyInMatchException;
+import org.example.model.Match;
+import org.example.model.Score;
 
 import java.time.LocalDateTime;
 

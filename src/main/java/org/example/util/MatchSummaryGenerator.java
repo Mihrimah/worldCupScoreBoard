@@ -1,4 +1,7 @@
-package org.example;
+package org.example.util;
+
+import org.example.model.Match;
+import org.example.repository.MatchRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

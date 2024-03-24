@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 /**
  * Enum representing the type of team.

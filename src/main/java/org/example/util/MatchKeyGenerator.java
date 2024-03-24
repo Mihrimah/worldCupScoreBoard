@@ -1,4 +1,4 @@
-package org.example;
+package org.example.util;
 
 /**
  * Generates a key for a match between two teams.
