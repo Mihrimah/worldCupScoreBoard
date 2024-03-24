@@ -1,6 +1,6 @@
 package org.example;
 
 public enum TeamType {
-    homeTeam,
-    awayTeam
+    HOME_TEAM,
+    AWAY_TEAM
 }
