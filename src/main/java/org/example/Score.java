@@ -1,5 +1,9 @@
 package org.example;
 
+/**
+ * Represents the score of a match.
+ * The score is represented by two integers: homeScore and awayScore.
+ */
 public class Score {
     private int homeScore = 0;
     private int awayScore = 0;
@@ -21,10 +25,15 @@ public class Score {
     }
 
     public void decrementHomeScore() {
-        homeScore--;
+        if (this.homeScore > 0) {
+            this.homeScore--;
+        }
     }
 
     public void decrementAwayScore() {
-        awayScore--;
+        if (this.awayScore > 0) {
+            this.awayScore--;
+        }
     }
+
 }
