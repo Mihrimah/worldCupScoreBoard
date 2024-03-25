@@ -1,11 +1,11 @@
-package org.example.manager;
+package org.worldcup.manager;
 
-import org.example.exceptions.MatchNotFoundException;
-import org.example.model.TeamType;
-import org.example.repository.InMemoryMatchRepository;
-import org.example.repository.MatchRepository;
-import org.example.util.MatchKeyGenerator;
-import org.example.util.SimpleMatchKeyGenerator;
+import org.worldcup.exceptions.MatchNotFoundException;
+import org.worldcup.model.TeamType;
+import org.worldcup.repository.InMemoryMatchRepository;
+import org.worldcup.repository.MatchRepository;
+import org.worldcup.util.MatchKeyGenerator;
+import org.worldcup.util.SimpleMatchKeyGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -217,7 +217,7 @@ public class ScoreManagerTest {
 
     @Test
     @DisplayName("Given: A finished match. When: Attempting to update the score. Then: Should throw MatchNotFoundException.")
-    public void testScoreUpdateAfterMatchFinish() {
+    public void attemptToUpdateScoresInFinishedMatches() {
         String homeTeam = "TeamFinal";
         String awayTeam = "TeamLast";
         matchManager.startMatch(homeTeam, awayTeam);

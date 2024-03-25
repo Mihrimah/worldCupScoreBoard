@@ -1,4 +1,4 @@
-package org.example.model;
+package org.worldcup.model;
 
 import java.time.LocalDateTime;
 

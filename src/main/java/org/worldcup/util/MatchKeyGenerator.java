@@ -1,4 +1,4 @@
-package org.example.util;
+package org.worldcup.util;
 
 /**
  * Generates a key for a match between two teams.

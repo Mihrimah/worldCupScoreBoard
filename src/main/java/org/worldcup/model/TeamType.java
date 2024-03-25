@@ -1,4 +1,4 @@
-package org.example.model;
+package org.worldcup.model;
 
 /**
  * Enum representing the type of team.

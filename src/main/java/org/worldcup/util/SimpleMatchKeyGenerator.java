@@ -1,4 +1,4 @@
-package org.example.util;
+package org.worldcup.util;
 
 public class SimpleMatchKeyGenerator implements MatchKeyGenerator{
     @Override

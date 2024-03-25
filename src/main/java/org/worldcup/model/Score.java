@@ -1,4 +1,4 @@
-package org.example.model;
+package org.worldcup.model;
 
 /**
  * Represents the score of a match.

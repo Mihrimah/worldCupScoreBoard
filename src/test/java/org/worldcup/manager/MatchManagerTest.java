@@ -1,14 +1,14 @@
-package org.example.manager;
+package org.worldcup.manager;
 
-import org.example.exceptions.ExistingMatchConflictException;
-import org.example.exceptions.MatchAlreadyStartedException;
-import org.example.exceptions.MatchNotFoundException;
-import org.example.exceptions.TeamAlreadyInMatchException;
-import org.example.model.Match;
-import org.example.repository.InMemoryMatchRepository;
-import org.example.repository.MatchRepository;
-import org.example.util.MatchKeyGenerator;
-import org.example.util.SimpleMatchKeyGenerator;
+import org.worldcup.exceptions.ExistingMatchConflictException;
+import org.worldcup.exceptions.MatchAlreadyStartedException;
+import org.worldcup.exceptions.MatchNotFoundException;
+import org.worldcup.exceptions.TeamAlreadyInMatchException;
+import org.worldcup.model.Match;
+import org.worldcup.repository.InMemoryMatchRepository;
+import org.worldcup.repository.MatchRepository;
+import org.worldcup.util.MatchKeyGenerator;
+import org.worldcup.util.SimpleMatchKeyGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

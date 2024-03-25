@@ -1,6 +1,6 @@
-package org.example.repository;
+package org.worldcup.repository;
 
-import org.example.model.Match;
+import org.worldcup.model.Match;
 
 import java.util.Collection;
 

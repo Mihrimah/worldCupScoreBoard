@@ -1,4 +1,4 @@
-package org.example.exceptions;
+package org.worldcup.exceptions;
 
 public class MatchNotFoundException extends RuntimeException {
 

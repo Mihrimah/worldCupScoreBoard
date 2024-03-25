@@ -1,7 +1,7 @@
-package org.example.manager;
+package org.worldcup.manager;
 
-import org.example.model.Match;
-import org.example.model.TeamType;
+import org.worldcup.model.Match;
+import org.worldcup.model.TeamType;
 
 /**
  * This class manages the scores of matches.

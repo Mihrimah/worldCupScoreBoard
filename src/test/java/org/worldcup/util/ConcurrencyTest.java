@@ -1,11 +1,11 @@
-package org.example.util;
+package org.worldcup.util;
 
-import org.example.exceptions.MatchAlreadyStartedException;
-import org.example.manager.MatchManager;
-import org.example.manager.ScoreManager;
-import org.example.model.TeamType;
-import org.example.repository.InMemoryMatchRepository;
-import org.example.repository.MatchRepository;
+import org.worldcup.exceptions.MatchAlreadyStartedException;
+import org.worldcup.manager.MatchManager;
+import org.worldcup.manager.ScoreManager;
+import org.worldcup.model.TeamType;
+import org.worldcup.repository.InMemoryMatchRepository;
+import org.worldcup.repository.MatchRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
