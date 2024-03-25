@@ -1,12 +1,10 @@
 ## Football World Cup Scoreboard Library
 **Author:** Mihrimah Sultan Yıldırım
 
-**Description**
-
+### Description
 This Java library manages a live scoreManager for Football World Cup matches. It allows users to start new matches, update scores, finish matches, and get a summary of matches in progress, ordered by their total score and the most recently started match.
 
-**Features**
-
+### Features
 **Start a new match:** Assuming initial score 0 – 0 and adding it the scoreboard. This should capture following parameters:
 *Home team* and *Away team*
 
@@ -17,7 +15,13 @@ This Java library manages a live scoreManager for Football World Cup matches. It
 
 **Get a summary of matches in progress ordered by their total score:** The matches with the same total score will be returned ordered by the most recently started match in the scoreboard.
 
-**Assumptions and Notes**
+### Setup
+- **Java Version:** Java 17 or higher
+- **Build Tool:** Gradle
+- **Dependencies:** JUnit 5 (for testing)
+- **IDE:** IntelliJ IDEA (recommended)
+
+### Assumptions and Notes
 
 - **Match Identification:**
   - Each match is uniquely identified by its home and away team names.
@@ -35,3 +39,11 @@ This Java library manages a live scoreManager for Football World Cup matches. It
   - The summary is sorted by total score, with ties broken by the most recent start time. This ensures that the most competitive and recent matches are listed first.
 - **Error Handling:**
   - The library uses specific exceptions to signal various error conditions (e.g., MatchAlreadyStartedException, MatchNotFoundException). It is crucial for callers to handle these exceptions appropriately.
+
+---
+
+Thank you for considering my application and taking the time to review my project.
+
+I'm eager to discuss how I approached this challenge and how I can bring the same level of dedication and innovation to your team.
+
+Please don't hesitate to reach out if you have any questions or need further information.
