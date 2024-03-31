@@ -88,7 +88,11 @@ public class MatchManager {
      * @throws MatchNotFoundException if the match between the home team and away team is not found
      */
     public Match findMatch(String homeTeam, String awayTeam) {
-        Match match = matchRepository.getMatch(generateKey(homeTeam, awayTeam));
+        // Normalize team names to ensure consistent case
+        String normalizedHomeTeam = homeTeam.toLowerCase();
+        String normalizedAwayTeam = awayTeam.toLowerCase();
+
+        Match match = matchRepository.getMatch(generateKey(normalizedHomeTeam, normalizedAwayTeam));
         if (match == null){
             throw new MatchNotFoundException(homeTeam, awayTeam);
         }

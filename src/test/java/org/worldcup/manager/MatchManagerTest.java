@@ -1,5 +1,6 @@
 package org.worldcup.manager;
 
+import org.junit.jupiter.api.Nested;
 import org.worldcup.exceptions.ExistingMatchConflictException;
 import org.worldcup.exceptions.MatchAlreadyStartedException;
 import org.worldcup.exceptions.MatchNotFoundException;
@@ -30,147 +31,285 @@ public class MatchManagerTest {
         matchManager = new MatchManager(matchRepository, matchKeyGenerator);
     }
 
-    @Test
-    @DisplayName("Given: A match. When: The match is inserted into scoreboard. Then: The match must exist in the scoreboard.")
-    public void matchInsertionAndExistenceVerification() {
-        String homeTeam = "TeamA";
-        String awayTeam = "TeamB";
-        matchManager.startMatch(homeTeam, awayTeam);
-        Match retrievedMatch = matchManager.findMatch(homeTeam, awayTeam);
-
-        assertNotNull(retrievedMatch, "Retrieved match should not be null.");
-        assertEquals(homeTeam, retrievedMatch.homeTeam(), "Home team should match.");
-        assertEquals(awayTeam, retrievedMatch.awayTeam(), "Away team should match.");
-    }
-
-    @Test
-    @DisplayName("Given: An invalid match setup. When: Attempting to start a match with the same team as both home and away. Then: IllegalArgumentException is thrown.")
-    public void preventInvalidMatchSetup() {
-        String homeTeam = "TeamA";
-        assertThrows(IllegalArgumentException.class, () -> matchManager.startMatch(homeTeam, homeTeam));
-    }
-
-    @Test
-    @DisplayName("Given: An attempt to start a match with null team names. When: Either the home team or away team name is null. Then: IllegalArgumentException is thrown.")
-    public void testStartMatchWithNullTeamNames() {
-        String homeTeam = "TeamA";
-
-        // Test with null as the home team name
-        IllegalArgumentException homeTeamException = assertThrows(IllegalArgumentException.class, () -> matchManager.startMatch(null, "TeamB"));
-        assertEquals("Home team name cannot be null or empty", homeTeamException.getMessage());
-
-        // Test with null as the away team name
-        IllegalArgumentException awayTeamException = assertThrows(IllegalArgumentException.class, () -> matchManager.startMatch(homeTeam, null));
-        assertEquals("Away team name cannot be null or empty", awayTeamException.getMessage());
-
-        // Test with null for both team names
-        IllegalArgumentException bothTeamsException = assertThrows(IllegalArgumentException.class, () -> matchManager.startMatch(null, null));
-        assertEquals("Home team name cannot be null or empty", bothTeamsException.getMessage());
-    }
-
-    @Test
-    @DisplayName("Given: An attempt to start a match with empty team names. When: Either the home team or away team name is an empty string. Then: IllegalArgumentException is thrown.")
-    public void testStartMatchWithEmptyTeamNames() {
-        String homeTeam = "TeamA";
-        String emptyString = "";
-
-        // Test with empty string as the home team name
-        IllegalArgumentException homeTeamException = assertThrows(IllegalArgumentException.class, () -> matchManager.startMatch(emptyString, "TeamB"));
-        assertEquals("Home team name cannot be null or empty", homeTeamException.getMessage());
-
-        // Test with empty string as the away team name
-        IllegalArgumentException awayTeamException = assertThrows(IllegalArgumentException.class, () -> matchManager.startMatch(homeTeam, emptyString));
-        assertEquals("Away team name cannot be null or empty", awayTeamException.getMessage());
-
-        // Test with empty strings for both team names
-        IllegalArgumentException bothTeamsException = assertThrows(IllegalArgumentException.class, () -> matchManager.startMatch(emptyString, emptyString));
-        assertEquals("Home team name cannot be null or empty", bothTeamsException.getMessage());
-    }
-
-    @Test
-    @DisplayName("Given: A random number of matches. When: The all matches inserted into the scoreboard. Then: The match number in the scoreboard must be correct.")
-    public void verifyCorrectMatchCountAfterInsertion() {
-        String teamPrefix = "Team";
-        int totalMatch = new Random().nextInt(1, 1000);
-        
-        for (int i = 0; i < totalMatch * 2; i = i + 2) {
-            String homeTeam = teamPrefix + i;
-            String awayTeam = teamPrefix + i + 1;
-
+    @Nested
+    @DisplayName("Match Insertion Tests")
+    class MatchInsertionTests {
+        @Test
+        @DisplayName("Given: A match. When: The match is inserted into scoreboard. Then: The match must exist in the scoreboard.")
+        public void matchInsertionAndExistence() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, awayTeam);
+
             assertTrue(matchRepository.containsMatch(matchKeyGenerator.generateKey(homeTeam, awayTeam)));
         }
 
-        assertTrue(matchRepository.countMatches() > 0);
-        assertEquals(matchRepository.countMatches(), totalMatch);
+        @Test
+        @DisplayName("Given: A match that has been inserted into scoreboard. When: Attempting to retrieve the match. Then: The match must be found.")
+        public void matchExistenceVerification() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            matchManager.startMatch(homeTeam, awayTeam);
+
+            Match retrievedMatch = matchManager.findMatch(homeTeam, awayTeam);
+
+            assertNotNull(retrievedMatch, "Retrieved match should not be null.");
+            assertEquals(homeTeam, retrievedMatch.homeTeam(), "Home team should match.");
+            assertEquals(awayTeam, retrievedMatch.awayTeam(), "Away team should match.");
+        }
+
+        @Test
+        @DisplayName("Given: A match with team names in different cases. When: Inserting and retrieving the match. Then: Match should be found.")
+        public void matchInsertionAndExistenceWithDifferentCase() {
+            String homeTeam = "TeamA";
+            String awayTeam = "teamB"; // TeamB in different case
+
+            // Act
+            matchManager.startMatch(homeTeam, awayTeam);
+            Match retrievedMatch = matchManager.findMatch(homeTeam.toUpperCase(), awayTeam.toUpperCase());
+
+            // Assert
+            assertNotNull(retrievedMatch, "Retrieved match should not be null.");
+            assertEquals(homeTeam, retrievedMatch.homeTeam(), "Home team should match.");
+            assertEquals(awayTeam, retrievedMatch.awayTeam(), "Away team should match.");
+        }
+
+        @Test
+        @DisplayName("Given: A match with very long team names. When: Inserting and retrieving the match. Then: Match should be found.")
+        public void matchInsertionAndExistenceWithLongTeamNames() {
+            String homeTeam = "A".repeat(100); // Very long team name
+            String awayTeam = "B".repeat(100); // Very long team name
+
+            // Act
+            matchManager.startMatch(homeTeam, awayTeam);
+            Match retrievedMatch = matchManager.findMatch(homeTeam, awayTeam);
+
+            // Assert
+            assertNotNull(retrievedMatch, "Retrieved match should not be null.");
+            assertEquals(homeTeam, retrievedMatch.homeTeam(), "Home team should match.");
+            assertEquals(awayTeam, retrievedMatch.awayTeam(), "Away team should match.");
+        }
+
+        @Test
+        @DisplayName("Given: A match with special characters in team names. When: Inserting and retrieving the match. Then: Match should be found.")
+        public void matchInsertionAndExistenceWithSpecialCharacters() {
+            String homeTeam = "Team_A"; // Team name with underscore
+            String awayTeam = "Team-B"; // Team name with hyphen
+
+            // Act
+            matchManager.startMatch(homeTeam, awayTeam);
+            Match retrievedMatch = matchManager.findMatch(homeTeam, awayTeam);
+
+            // Assert
+            assertNotNull(retrievedMatch, "Retrieved match should not be null.");
+            assertEquals(homeTeam, retrievedMatch.homeTeam(), "Home team should match.");
+            assertEquals(awayTeam, retrievedMatch.awayTeam(), "Away team should match.");
+        }
     }
 
-    @Test
-    @DisplayName("Given: A match that has already been started. When: Attempting to start the same match again. Then: MatchAlreadyStartedException is thrown.")
-    public void preventDuplicateMatchStart(){
-        String homeTeam = "TeamA";
-        String awayTeam = "TeamB";
-        matchManager.startMatch(homeTeam, awayTeam);
+    @Nested
+    @DisplayName("Validate Teams Tests")
+    class ValidateTeamsTests {
 
-        assertTrue(matchRepository.containsMatch(matchKeyGenerator.generateKey(homeTeam, awayTeam)));
-        assertThrows(MatchAlreadyStartedException.class, () -> matchManager.startMatch(homeTeam, awayTeam));
+        @Test
+        @DisplayName("Given: Null home team. When: Validating teams. Then: IllegalArgumentException is thrown.")
+        public void validateNullHomeTeam() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams(null, "TeamB"));
+        }
+
+        @Test
+        @DisplayName("Given: Empty home team. When: Validating teams. Then: IllegalArgumentException is thrown.")
+        public void validateEmptyHomeTeam() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams("", "TeamB"));
+        }
+
+        @Test
+        @DisplayName("Given: Null away team. When: Validating teams. Then: IllegalArgumentException is thrown.")
+        public void validateNullAwayTeam() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams("TeamA", null));
+        }
+
+        @Test
+        @DisplayName("Given: Empty away team. When: Validating teams. Then: IllegalArgumentException is thrown.")
+        public void validateEmptyAwayTeam() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams("TeamA", ""));
+        }
+
+        @Test
+        @DisplayName("Given: Same home and away teams. When: Validating teams. Then: IllegalArgumentException is thrown.")
+        public void validateSameTeams() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams("TeamA", "TeamA"));
+        }
+
     }
 
-    @Test
-    @DisplayName("Given: A match that has already been started. When: Attempting to start the match between the same team, but reversed. Then: ExistingMatchConflictException is thrown.")
-    public void preventReversedTeamMatchStart(){
-        String homeTeam = "TeamA";
-        String awayTeam = "TeamB";
-        matchManager.startMatch(homeTeam, awayTeam);
+    @Nested
+    @DisplayName("Match Start Tests")
+    class MatchStartTests {
 
-        assertTrue(matchRepository.containsMatch(matchKeyGenerator.generateKey(homeTeam, awayTeam)));
-        assertThrows(ExistingMatchConflictException.class, () -> matchManager.startMatch(awayTeam, homeTeam));
+        @Test
+        @DisplayName("Given: A match that has already been started. When: Attempting to start the same match again. Then: MatchAlreadyStartedException is thrown.")
+        public void validateDuplicateMatchStart() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            matchManager.startMatch(homeTeam, awayTeam);
+
+            assertTrue(matchRepository.containsMatch(matchKeyGenerator.generateKey(homeTeam, awayTeam)));
+            assertThrows(MatchAlreadyStartedException.class, () -> matchManager.startMatch(homeTeam, awayTeam));
+        }
+
+        @Test
+        @DisplayName("Given: A match that has already been started. When: Attempting to start the match between the same team, but reversed. Then: ExistingMatchConflictException is thrown.")
+        public void validateReversedTeamNamesMatchStart() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            matchManager.startMatch(homeTeam, awayTeam);
+
+            assertTrue(matchRepository.containsMatch(matchKeyGenerator.generateKey(homeTeam, awayTeam)));
+            assertThrows(ExistingMatchConflictException.class, () -> matchManager.startMatch(awayTeam, homeTeam));
+        }
+
+        @Test
+        @DisplayName("Given: A random number of matches. When: The all matches inserted into the scoreboard. Then: The match number in the scoreboard must be correct.")
+        public void verifyCorrectMatchCountAfterInsertion() {
+            String teamPrefix = "Team";
+            int totalMatch = new Random().nextInt(1, 1000);
+
+            for (int i = 0; i < totalMatch * 2; i = i + 2) {
+                String homeTeam = teamPrefix + i;
+                String awayTeam = teamPrefix + i + 1;
+
+                matchManager.startMatch(homeTeam, awayTeam);
+                assertTrue(matchRepository.containsMatch(matchKeyGenerator.generateKey(homeTeam, awayTeam)));
+            }
+
+            assertTrue(matchRepository.countMatches() > 0);
+            assertEquals(matchRepository.countMatches(), totalMatch);
+        }
+
     }
 
-    @Test
-    @DisplayName("Given: A team is already in match. When: Attempting to start a match with the same team again. Then: TeamAlreadyInMatchException is thrown.")
-    public void preventMatchStartWithTeamAlreadyInMatch() {
-        String homeTeam = "TeamA";
-        String awayTeam = "TeamB";
-        String newTeam = "TeamC";
+    @Nested
+    @DisplayName("Prevent Match Start With Team Already In Match Tests")
+    class PreventMatchStartWithTeamAlreadyInMatchTests {
 
-        matchManager.startMatch(homeTeam, awayTeam);
+        @Test
+        @DisplayName("Given: Home team is already in a match. When: Attempting to start a match with the same home team again. Then: TeamAlreadyInMatchException is thrown.")
+        public void preventMatchStartWithHomeTeamAlreadyInMatch() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            String newTeam = "TeamC";
+            matchManager.startMatch(homeTeam, awayTeam);
+            assertThrows(TeamAlreadyInMatchException.class, () -> matchManager.startMatch(homeTeam, newTeam));
+        }
 
-        assertThrows(TeamAlreadyInMatchException.class, () -> matchManager.startMatch(homeTeam, newTeam));
-        assertThrows(TeamAlreadyInMatchException.class, () -> matchManager.startMatch(newTeam, homeTeam));
-        assertThrows(TeamAlreadyInMatchException.class, () -> matchManager.startMatch(newTeam, awayTeam));
-        assertThrows(TeamAlreadyInMatchException.class, () -> matchManager.startMatch(awayTeam, newTeam));
+        @Test
+        @DisplayName("Given: Away team is already in a match. When: Attempting to start a match with the same away team again. Then: TeamAlreadyInMatchException is thrown.")
+        public void preventMatchStartWithAwayTeamAlreadyInMatch() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            String newTeam = "TeamC";
+            matchManager.startMatch(homeTeam, awayTeam);
+            assertThrows(TeamAlreadyInMatchException.class, () -> matchManager.startMatch(newTeam, awayTeam));
+        }
+
+        @Test
+        @DisplayName("Given: A team is already in a match. When: Attempting to start a match with the same team again (home and away). Then: TeamAlreadyInMatchException is thrown.")
+        public void preventMatchStartWithBothTeamsAlreadyInMatch() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            matchManager.startMatch(homeTeam, "TeamC");
+            matchManager.startMatch("TeamD", awayTeam);
+            assertThrows(TeamAlreadyInMatchException.class, () -> matchManager.startMatch(homeTeam, awayTeam));
+        }
+
+        @Test
+        @DisplayName("Given: A team is already in a match. When: Attempting to start a match with the same team again (away and home). Then: ExistingMatchConflictException is thrown.")
+        public void preventMatchStartWithTeamsReversedExistingMatchConflict() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            matchManager.startMatch(homeTeam, awayTeam);
+            assertThrows(ExistingMatchConflictException.class, () -> matchManager.startMatch(awayTeam, homeTeam));
+        }
+
     }
 
-    @Test
-    @DisplayName("Given: A non existing match. When: Attempting to finish the match. Then: MatchNotFoundException should be thrown.")
-    public void attemptToFinishNonExistingMatch(){
-        String homeTeam = "Mexico";
-        String awayTeam = "Canada";
-        assertThrows(MatchNotFoundException.class, () -> matchManager.finishMatch(homeTeam, awayTeam));
-    }
+    @Nested
+    @DisplayName("Match Finish Tests")
+    class MatchFinishTests {
 
-    @Test
-    @DisplayName("Given: Null or empty team names. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
-    public void attemptToFinishMatchWithNullOrEmptyTeamNames() {
-        String teamA = "TeamA";
-        String teamB = "TeamB";
+        @Test
+        @DisplayName("Given: An existing match. When: Attempting to finish the match. Then: Match should be finished.")
+        public void attemptToFinishExistingMatch() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            matchManager.startMatch(homeTeam, awayTeam);
 
-        // Test with null home team name
-        assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch(null, teamB),
-                "Attempting to finish a match with a null home team name should throw IllegalArgumentException.");
+            assertDoesNotThrow(() -> matchManager.finishMatch(homeTeam, awayTeam));
+        }
 
-        // Test with null away team name
-        assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch(teamA, null),
-                "Attempting to finish a match with a null away team name should throw IllegalArgumentException.");
+        @Test
+        @DisplayName("Given: Valid team names. When: Attempting to finish a match. Then: Match should be finished.")
+        public void attemptToFinishMatchWithValidTeamNames() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+            matchManager.startMatch(homeTeam, awayTeam);
 
-        // Test with empty home team name
-        assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch("", teamB),
-                "Attempting to finish a match with an empty home team name should throw IllegalArgumentException.");
+            assertDoesNotThrow(() -> matchManager.finishMatch(homeTeam, awayTeam));
+        }
 
-        // Test with empty away team name
-        assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch(teamA, ""),
-                "Attempting to finish a match with an empty away team name should throw IllegalArgumentException.");
+        @Test
+        @DisplayName("Given: A match that has not been started. When: Attempting to finish the match. Then: MatchNotFoundException should be thrown.")
+        public void attemptToFinishNonExistingMatch() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+
+            assertThrows(MatchNotFoundException.class, () -> matchManager.finishMatch(homeTeam, awayTeam));
+        }
+
+        @Test
+        @DisplayName("Given: A match that has not been started. When: Attempting to finish the match with reversed team names. Then: MatchNotFoundException should be thrown.")
+        public void attemptToFinishNonExistingMatchWithReversedTeamNames() {
+            String homeTeam = "TeamA";
+            String awayTeam = "TeamB";
+
+            assertThrows(MatchNotFoundException.class, () -> matchManager.finishMatch(awayTeam, homeTeam));
+        }
+
+        @Test
+        @DisplayName("Given: A match that has not been started. When: Attempting to finish the match with different case team names. Then: MatchNotFoundException should be thrown.")
+        public void attemptToFinishMatchWithDifferentCaseTeamNames() {
+            String homeTeam = "Team-a";
+            String awayTeam = "Team-b";
+
+            matchManager.startMatch(homeTeam, awayTeam);
+
+            assertDoesNotThrow(() -> matchManager.finishMatch(homeTeam.toUpperCase(), awayTeam.toUpperCase()));
+        }
+
+        @Test
+        @DisplayName("Given: Null home team name. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
+        public void attemptToFinishMatchWithNullHomeTeamName() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch(null, "TeamB"));
+        }
+
+        @Test
+        @DisplayName("Given: Null away team name. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
+        public void attemptToFinishMatchWithNullAwayTeamName() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch("TeamA", null));
+        }
+
+        @Test
+        @DisplayName("Given: Empty home team name. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
+        public void attemptToFinishMatchWithEmptyHomeTeamName() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch("", "TeamB"));
+        }
+
+        @Test
+        @DisplayName("Given: Empty away team name. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
+        public void attemptToFinishMatchWithEmptyAwayTeamName() {
+            assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch("TeamA", ""));
+        }
     }
 
 }
