@@ -9,8 +9,6 @@ import org.worldcup.exceptions.TeamAlreadyInMatchException;
 import org.worldcup.model.Match;
 import org.worldcup.model.Score;
 
-import java.time.LocalDateTime;
-
 public class MatchManager {
     private final MatchRepository matchRepository;
     private final MatchKeyGenerator matchKeyGenerator;
@@ -37,7 +35,7 @@ public class MatchManager {
         } else if (matchRepository.isTeamInAnyMatch(homeTeam) || matchRepository.isTeamInAnyMatch(awayTeam)){
             throw new TeamAlreadyInMatchException(homeTeam, awayTeam);
         }
-        Match match = new Match(homeTeam, awayTeam, new Score(), LocalDateTime.now());
+        Match match = new Match(homeTeam, awayTeam, new Score());
         matchRepository.addMatch(generateKey(homeTeam, awayTeam), match);
     }
 

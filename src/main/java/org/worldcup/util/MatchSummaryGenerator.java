@@ -46,7 +46,7 @@ public class MatchSummaryGenerator {
             // Return the comparison based on total score if they're not equal
             return scoreComparison;
         } else {
-            return match2.startTime().compareTo(match1.startTime());
+            return 1; // Return 1 if the total score is equal to prioritize the match that started later
         }
     }
 
