@@ -4,7 +4,6 @@ import org.worldcup.model.Match;
 import org.worldcup.repository.MatchRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This class generates a summary of all matches.
@@ -28,7 +27,7 @@ public class MatchSummaryGenerator {
         return matchRepository.getAllMatches().stream()
                 .sorted(this::compareMatches)
                 .map(Match::toString)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

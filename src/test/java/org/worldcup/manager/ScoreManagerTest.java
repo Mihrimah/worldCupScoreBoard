@@ -18,14 +18,14 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ScoreManagerTest {
+class ScoreManagerTest {
 
     private MatchRepository matchRepository;
     private MatchManager matchManager;
     private ScoreManager scoreManager;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         matchRepository = new InMemoryMatchRepository();
         MatchKeyGenerator matchKeyGenerator = new SimpleMatchKeyGenerator();
         matchManager = new MatchManager(matchRepository, matchKeyGenerator);
@@ -41,7 +41,7 @@ public class ScoreManagerTest {
     class MatchLifecycleTests {
         @Test
         @DisplayName("Starting a match and getting initial score")
-        public void startMatchWithInitialZeroScore() {
+        void startMatchWithInitialZeroScore() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -50,7 +50,7 @@ public class ScoreManagerTest {
 
         @Test
         @DisplayName("Finishing a match removes it from the scoreboard")
-        public void finishMatchAndVerifyRemovalFromScoreboard() {
+        void finishMatchAndVerifyRemovalFromScoreboard() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -64,7 +64,7 @@ public class ScoreManagerTest {
     class ScoreUpdateTests {
         @Test
         @DisplayName("Updating scores for home and away teams")
-        public void updateAndVerifyHomeAndAwayTeamScores() {
+        void updateAndVerifyHomeAndAwayTeamScores() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -75,7 +75,7 @@ public class ScoreManagerTest {
 
         @Test
         @DisplayName("Ensure thread safety for concurrent score updates")
-        public void ensureThreadSafetyForConcurrentScoreUpdates() throws InterruptedException {
+        void ensureThreadSafetyForConcurrentScoreUpdates() throws InterruptedException {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -97,13 +97,13 @@ public class ScoreManagerTest {
     class ErrorHandlingTests {
         @Test
         @DisplayName("Given: A non-existent match. When: Attempting to get score for non-existent match Then: throws MatchNotFoundException")
-        public void ensureMatchNotFoundExceptionForScoreRetrieval() {
+        void ensureMatchNotFoundExceptionForScoreRetrieval() {
             assertThrows(MatchNotFoundException.class, () -> scoreManager.getScore("TeamA", "TeamB"));
         }
 
         @Test
         @DisplayName("Given: An ongoing match between TeamA and TeamB. When: Retrieving score with reversed teams. Then: MatchNotFoundException is thrown.")
-        public void preventGetReversedTeamMatchScore(){
+        void preventGetReversedTeamMatchScore(){
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -115,7 +115,7 @@ public class ScoreManagerTest {
 
         @Test
         @DisplayName("Updating score with null team names throws IllegalArgumentException")
-        public void updateScoreWithInvalidTeamNames() {
+        void updateScoreWithInvalidTeamNames() {
             startMatch("TeamA", "TeamB");
             assertThrows(IllegalArgumentException.class, () -> scoreManager.updateScore(null, "TeamB", TeamType.HOME_TEAM));
             assertThrows(IllegalArgumentException.class, () -> scoreManager.updateScore("TeamA", null, TeamType.AWAY_TEAM));
@@ -124,14 +124,14 @@ public class ScoreManagerTest {
 
         @Test
         @DisplayName("Given: An ongoing match. When: Attempting to adjust score with an invalid team type. Then: IllegalArgumentException should be thrown.")
-        public void testAdjustScoreWithInvalidTeamType() {
+        void testAdjustScoreWithInvalidTeamType() {
             startMatch("TeamA", "TeamB");
             assertThrows(IllegalArgumentException.class, () -> scoreManager.updateScore("TeamA", "TeamB", null), "Invalid team type");
         }
 
         @Test
         @DisplayName("Given: A finished match. When: Attempting to update the score. Then: Should throw MatchNotFoundException.")
-        public void attemptToUpdateScoresInFinishedMatch() {
+        void attemptToUpdateScoresInFinishedMatch() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -147,7 +147,7 @@ public class ScoreManagerTest {
 
         @Test
         @DisplayName("Reverting score after an infraction")
-        public void revertScoreAfterInfractionInOngoingMatch() {
+        void revertScoreAfterInfractionInOngoingMatch() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -158,7 +158,7 @@ public class ScoreManagerTest {
 
         @Test
         @DisplayName("Given: An on going match. When: Attempting to adjust the initial score. Then: Initial score cannot be adjusted")
-        public void attemptInitialScoreAdjustment() {
+        void attemptInitialScoreAdjustment() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -169,7 +169,7 @@ public class ScoreManagerTest {
 
         @Test
         @DisplayName("Given: An ongoing match with a score. When: Adjusting the score for an infraction. Then: The score should revert to its previous state.")
-        public void adjustScoreForInfraction() {
+        void adjustScoreForInfraction() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);
@@ -185,7 +185,7 @@ public class ScoreManagerTest {
 
         @Test
         @DisplayName("Given: An ongoing match. When: Two infractions, removing two goals. Then: Score should correctly adjust for multiple infractions")
-        public void adjustScoresMultipleTimesForInfractions() {
+        void adjustScoresMultipleTimesForInfractions() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             startMatch(homeTeam, awayTeam);

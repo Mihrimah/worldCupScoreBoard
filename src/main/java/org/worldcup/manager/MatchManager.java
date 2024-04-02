@@ -9,6 +9,10 @@ import org.worldcup.exceptions.TeamAlreadyInMatchException;
 import org.worldcup.model.Match;
 import org.worldcup.model.Score;
 
+/**
+ * This class manages the matches between teams.
+ * It contains methods to start, finish, and find a match.
+ */
 public class MatchManager {
     private final MatchRepository matchRepository;
     private final MatchKeyGenerator matchKeyGenerator;

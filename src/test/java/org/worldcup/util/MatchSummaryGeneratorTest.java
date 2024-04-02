@@ -13,13 +13,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MatchSummaryGeneratorTest {
+class MatchSummaryGeneratorTest {
 
     private MatchRepository matchRepository;
     private MatchManager matchManager;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         matchRepository = new InMemoryMatchRepository();
         MatchKeyGenerator matchKeyGenerator = new SimpleMatchKeyGenerator();
         matchManager = new MatchManager(matchRepository, matchKeyGenerator);
@@ -27,13 +27,13 @@ public class MatchSummaryGeneratorTest {
 
     @Test
     @DisplayName("Given: No matches have been started. When: Retrieving the match summary. Then: The summary should be empty.")
-    public void summaryWithNoMatches() {
+    void summaryWithNoMatches() {
         MatchSummaryGenerator summaryGenerator = new MatchSummaryGenerator(matchRepository);
         assertTrue(summaryGenerator.getSummary().isEmpty(), "Match summary should be empty when no matches have been started.");
     }
     @Test
     @DisplayName("Given: Multiple started matches with various scores. When: Retrieving the detailed match summary. Then: The summary should include all matches with correct scores.")
-    public void detailedMatchSummary() {
+    void detailedMatchSummary() {
         matchManager.startMatch("TeamA", "TeamB");
         ScoreManager scoreManager = new ScoreManager(matchManager);
         scoreManager.updateScore("TeamA", "TeamB", TeamType.HOME_TEAM); // TeamA 1 - TeamB 0
@@ -48,7 +48,7 @@ public class MatchSummaryGeneratorTest {
 
     @Test
     @DisplayName("Given: Ongoing and finished matches. When: Retrieving the match summary. Then: Only ongoing matches should be included.")
-    public void summaryExcludesFinishedMatches() {
+    void summaryExcludesFinishedMatches() {
         matchManager.startMatch("TeamA", "TeamB");
         matchManager.startMatch("TeamC", "TeamD");
         matchManager.finishMatch("TeamA", "TeamB");
@@ -61,7 +61,7 @@ public class MatchSummaryGeneratorTest {
 
     @Test
     @DisplayName("Given: Multiple ongoing matches. When: Retrieving summary. Then: Get a summary of matches in progress ordered by their total score.")
-    public void summarizeOngoingMatchesOrderedByTotalScore(){
+    void summarizeOngoingMatchesOrderedByTotalScore(){
         String homeTeamA = "TeamA";
         String awayTeamB = "TeamB";
         String homeTeamC = "TeamC";
@@ -81,7 +81,7 @@ public class MatchSummaryGeneratorTest {
 
     @Test
     @DisplayName("Given: Tied matches in summary. When: Sorting. Then: The matches with the same total score will be returned ordered by the most recently started match in the scoreboard.")
-    public void summarySortsTiedMatchesByMostRecentStartTime(){
+    void summarySortsTiedMatchesByMostRecentStartTime(){
         String homeTeamA = "TeamA";
         String awayTeamB = "TeamB";
         String homeTeamC = "TeamC";
@@ -99,7 +99,7 @@ public class MatchSummaryGeneratorTest {
 
     @Test
     @DisplayName("Given: Matches with same total scores. When summarizing. Then: Sort by most recent start.")
-    public void summarySortsByMostRecentMatch(){
+    void summarySortsByMostRecentMatch(){
         String homeTeamA = "TeamA";
         String awayTeamB = "TeamB";
         String homeTeamC = "TeamC";

@@ -18,14 +18,14 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MatchManagerTest {
+class MatchManagerTest {
 
     private MatchRepository matchRepository;
     private MatchKeyGenerator matchKeyGenerator;
     private MatchManager matchManager;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         matchRepository = new InMemoryMatchRepository();
         matchKeyGenerator = new SimpleMatchKeyGenerator();
         matchManager = new MatchManager(matchRepository, matchKeyGenerator);
@@ -36,7 +36,7 @@ public class MatchManagerTest {
     class MatchInsertionTests {
         @Test
         @DisplayName("Given: A match. When: The match is inserted into scoreboard. Then: The match must exist in the scoreboard.")
-        public void matchInsertionAndExistence() {
+        void matchInsertionAndExistence() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, awayTeam);
@@ -46,7 +46,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match that has been inserted into scoreboard. When: Attempting to retrieve the match. Then: The match must be found.")
-        public void matchExistenceVerification() {
+        void matchExistenceVerification() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, awayTeam);
@@ -60,7 +60,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match with team names in different cases. When: Inserting and retrieving the match. Then: Match should be found.")
-        public void matchInsertionAndExistenceWithDifferentCase() {
+        void matchInsertionAndExistenceWithDifferentCase() {
             String homeTeam = "TeamA";
             String awayTeam = "teamB"; // TeamB in different case
 
@@ -76,7 +76,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match with very long team names. When: Inserting and retrieving the match. Then: Match should be found.")
-        public void matchInsertionAndExistenceWithLongTeamNames() {
+        void matchInsertionAndExistenceWithLongTeamNames() {
             String homeTeam = "A".repeat(100); // Very long team name
             String awayTeam = "B".repeat(100); // Very long team name
 
@@ -92,7 +92,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match with special characters in team names. When: Inserting and retrieving the match. Then: Match should be found.")
-        public void matchInsertionAndExistenceWithSpecialCharacters() {
+        void matchInsertionAndExistenceWithSpecialCharacters() {
             String homeTeam = "Team_A"; // Team name with underscore
             String awayTeam = "Team-B"; // Team name with hyphen
 
@@ -113,31 +113,31 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: Null home team. When: Validating teams. Then: IllegalArgumentException is thrown.")
-        public void validateNullHomeTeam() {
+        void validateNullHomeTeam() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams(null, "TeamB"));
         }
 
         @Test
         @DisplayName("Given: Empty home team. When: Validating teams. Then: IllegalArgumentException is thrown.")
-        public void validateEmptyHomeTeam() {
+        void validateEmptyHomeTeam() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams("", "TeamB"));
         }
 
         @Test
         @DisplayName("Given: Null away team. When: Validating teams. Then: IllegalArgumentException is thrown.")
-        public void validateNullAwayTeam() {
+        void validateNullAwayTeam() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams("TeamA", null));
         }
 
         @Test
         @DisplayName("Given: Empty away team. When: Validating teams. Then: IllegalArgumentException is thrown.")
-        public void validateEmptyAwayTeam() {
+        void validateEmptyAwayTeam() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams("TeamA", ""));
         }
 
         @Test
         @DisplayName("Given: Same home and away teams. When: Validating teams. Then: IllegalArgumentException is thrown.")
-        public void validateSameTeams() {
+        void validateSameTeams() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.validateTeams("TeamA", "TeamA"));
         }
 
@@ -149,7 +149,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match that has already been started. When: Attempting to start the same match again. Then: MatchAlreadyStartedException is thrown.")
-        public void validateDuplicateMatchStart() {
+        void validateDuplicateMatchStart() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, awayTeam);
@@ -160,7 +160,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match that has already been started. When: Attempting to start the match between the same team, but reversed. Then: ExistingMatchConflictException is thrown.")
-        public void validateReversedTeamNamesMatchStart() {
+        void validateReversedTeamNamesMatchStart() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, awayTeam);
@@ -171,7 +171,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A random number of matches. When: The all matches inserted into the scoreboard. Then: The match number in the scoreboard must be correct.")
-        public void verifyCorrectMatchCountAfterInsertion() {
+        void verifyCorrectMatchCountAfterInsertion() {
             String teamPrefix = "Team";
             int totalMatch = new Random().nextInt(1, 1000);
 
@@ -195,7 +195,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: Home team is already in a match. When: Attempting to start a match with the same home team again. Then: TeamAlreadyInMatchException is thrown.")
-        public void preventMatchStartWithHomeTeamAlreadyInMatch() {
+        void preventMatchStartWithHomeTeamAlreadyInMatch() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             String newTeam = "TeamC";
@@ -205,7 +205,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: Away team is already in a match. When: Attempting to start a match with the same away team again. Then: TeamAlreadyInMatchException is thrown.")
-        public void preventMatchStartWithAwayTeamAlreadyInMatch() {
+        void preventMatchStartWithAwayTeamAlreadyInMatch() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             String newTeam = "TeamC";
@@ -215,7 +215,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A team is already in a match. When: Attempting to start a match with the same team again (home and away). Then: TeamAlreadyInMatchException is thrown.")
-        public void preventMatchStartWithBothTeamsAlreadyInMatch() {
+        void preventMatchStartWithBothTeamsAlreadyInMatch() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, "TeamC");
@@ -225,7 +225,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A team is already in a match. When: Attempting to start a match with the same team again (away and home). Then: ExistingMatchConflictException is thrown.")
-        public void preventMatchStartWithTeamsReversedExistingMatchConflict() {
+        void preventMatchStartWithTeamsReversedExistingMatchConflict() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, awayTeam);
@@ -240,7 +240,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: An existing match. When: Attempting to finish the match. Then: Match should be finished.")
-        public void attemptToFinishExistingMatch() {
+        void attemptToFinishExistingMatch() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, awayTeam);
@@ -250,7 +250,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: Valid team names. When: Attempting to finish a match. Then: Match should be finished.")
-        public void attemptToFinishMatchWithValidTeamNames() {
+        void attemptToFinishMatchWithValidTeamNames() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
             matchManager.startMatch(homeTeam, awayTeam);
@@ -260,7 +260,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match that has not been started. When: Attempting to finish the match. Then: MatchNotFoundException should be thrown.")
-        public void attemptToFinishNonExistingMatch() {
+        void attemptToFinishNonExistingMatch() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
 
@@ -269,7 +269,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match that has not been started. When: Attempting to finish the match with reversed team names. Then: MatchNotFoundException should be thrown.")
-        public void attemptToFinishNonExistingMatchWithReversedTeamNames() {
+        void attemptToFinishNonExistingMatchWithReversedTeamNames() {
             String homeTeam = "TeamA";
             String awayTeam = "TeamB";
 
@@ -278,7 +278,7 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: A match that has not been started. When: Attempting to finish the match with different case team names. Then: MatchNotFoundException should be thrown.")
-        public void attemptToFinishMatchWithDifferentCaseTeamNames() {
+        void attemptToFinishMatchWithDifferentCaseTeamNames() {
             String homeTeam = "Team-a";
             String awayTeam = "Team-b";
 
@@ -289,25 +289,25 @@ public class MatchManagerTest {
 
         @Test
         @DisplayName("Given: Null home team name. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
-        public void attemptToFinishMatchWithNullHomeTeamName() {
+        void attemptToFinishMatchWithNullHomeTeamName() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch(null, "TeamB"));
         }
 
         @Test
         @DisplayName("Given: Null away team name. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
-        public void attemptToFinishMatchWithNullAwayTeamName() {
+        void attemptToFinishMatchWithNullAwayTeamName() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch("TeamA", null));
         }
 
         @Test
         @DisplayName("Given: Empty home team name. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
-        public void attemptToFinishMatchWithEmptyHomeTeamName() {
+        void attemptToFinishMatchWithEmptyHomeTeamName() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch("", "TeamB"));
         }
 
         @Test
         @DisplayName("Given: Empty away team name. When: Attempting to finish a match. Then: IllegalArgumentException should be thrown.")
-        public void attemptToFinishMatchWithEmptyAwayTeamName() {
+        void attemptToFinishMatchWithEmptyAwayTeamName() {
             assertThrows(IllegalArgumentException.class, () -> matchManager.finishMatch("TeamA", ""));
         }
     }

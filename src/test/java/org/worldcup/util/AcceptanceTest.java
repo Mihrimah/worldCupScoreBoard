@@ -13,24 +13,24 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AcceptanceTest {
+class AcceptanceTest {
 
     private MatchManager matchManager;
-    private MatchRepository matchRepository;
+    private ScoreManager scoreManager;
+    private MatchSummaryGenerator summaryGenerator;
     private final SimpleMatchKeyGenerator matchKeyGenerator = new SimpleMatchKeyGenerator();
 
     @BeforeEach
-    public void setUp() {
-        matchRepository = new InMemoryMatchRepository();
+    void setUp() {
+        MatchRepository matchRepository = new InMemoryMatchRepository();
         matchManager = new MatchManager(matchRepository, matchKeyGenerator);
+        scoreManager = new ScoreManager(matchManager);
+        summaryGenerator = new MatchSummaryGenerator(matchRepository);
     }
 
     @Test
     @DisplayName("Given: Multiple matches with updated scores. When: Retrieved from the scoreboard. Then: They should be ordered by total score and start time for ties.")
-    public void testMatchesOrderedByScoreAndStartTime() {
-        ScoreManager scoreManager = new ScoreManager(matchManager);
-        MatchSummaryGenerator summaryGenerator = new MatchSummaryGenerator(matchRepository);
-
+    void testMatchesOrderedByScoreAndStartTime() {
         // Start matches
         matchManager.startMatch("Mexico", "Canada");
         matchManager.startMatch("Spain", "Brazil");

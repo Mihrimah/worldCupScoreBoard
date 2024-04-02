@@ -2,9 +2,9 @@
 **Author:** Mihrimah Sultan Yıldırım
 
 ### Description
-This Java library manages a live scoreManager for Football World Cup matches. It allows users to start new matches, update scores, finish matches, and get a summary of matches in progress, ordered by their total score and the most recently started match.
+This Java library manages a live score board for Football World Cup matches. It allows users to start new matches, update scores, finish matches, and get a summary of ongoing matches.
 
-### Features
+### Requirements
 **Start a new match:** Assuming initial score 0 – 0 and adding it the scoreboard. This should capture following parameters:
 *Home team* and *Away team*
 
@@ -21,7 +21,11 @@ This Java library manages a live scoreManager for Football World Cup matches. It
 - **Dependencies:** JUnit 5 (for testing)
 - **IDE:** IntelliJ IDEA (recommended)
 
-### Assumptions and Notes
+### Implementation
+#### Test-Driven Development (TDD)
+Start with writing tests for each functionality before implementing them. This includes testing match addition, score updates, match completion, and the summary logic.
+
+### Notes
 
 - **Match Identification:**
   - Each match is uniquely identified by its home and away team names.
@@ -36,14 +40,14 @@ This Java library manages a live scoreManager for Football World Cup matches. It
   - The score of a match can be adjusted by the football referee or other authorized personnel due to various reasons (e.g., referee error, video assistant referee review, offside call, handball, etc.).
 - **Match Summary Behavior:**
   - Only ongoing matches are included in the match summary. Finished matches are excluded.
-  - The summary is sorted by total score, with ties broken by the most recent start time. This ensures that the most competitive and recent matches are listed first.
+  - The summary is sorted by total score, with ties broken by the most recent match. This ensures that the most competitive and recent matches are listed first.
 - **Error Handling:**
   - The library uses specific exceptions to signal various error conditions (e.g., MatchAlreadyStartedException, MatchNotFoundException). It is crucial for callers to handle these exceptions appropriately.
 
 ---
 
-Thank you for considering my application and taking the time to review my project.
+Thank you for checking out the Football World Cup Scoreboard Library!
 
-I'm eager to discuss how I approached this challenge and how I can bring the same level of dedication and innovation to your team.
+I hope you find it useful and enjoy exploring its features.
 
-Please don't hesitate to reach out if you have any questions or need further information.
+Please feel free to provide feedback or suggestions for improvement.

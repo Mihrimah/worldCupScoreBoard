@@ -4,6 +4,8 @@ import org.worldcup.model.Match;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Represents an in-memory repository of matches.
@@ -12,9 +14,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryMatchRepository implements MatchRepository {
     private final ConcurrentHashMap<String, Match> matches = new ConcurrentHashMap<>();
 
+    private final Lock lock = new ReentrantLock();
+
     @Override
     public void addMatch(String key, Match match) {
-        matches.put(key, match);
+        lock.lock();
+        try {
+            if (!containsMatch(key) && !isTeamInAnyMatch(match.homeTeam()) && !isTeamInAnyMatch(match.awayTeam())) {
+                matches.put(key, match);
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override

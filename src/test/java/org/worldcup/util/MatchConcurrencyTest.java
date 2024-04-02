@@ -10,6 +10,7 @@ import org.worldcup.model.TeamType;
 import org.worldcup.repository.InMemoryMatchRepository;
 import org.worldcup.repository.MatchRepository;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +20,7 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MatchConcurrencyTest {
+class MatchConcurrencyTest {
 
     private MatchManager matchManager;
     private MatchRepository matchRepository;
@@ -33,24 +34,37 @@ public class MatchConcurrencyTest {
 
     @Test
     @DisplayName("Concurrent match starts")
-    public void concurrentMatchStarts() throws InterruptedException {
+    void concurrentMatchStarts() throws InterruptedException {
         ExecutorService service = Executors.newFixedThreadPool(10);
+        ConcurrentLinkedQueue<String> teamsQueue = new ConcurrentLinkedQueue<>();
 
-        IntStream.range(0, 20).forEach(i -> service.submit(() -> {
-            try {
-                matchManager.startMatch("Team" + i, "Team" + (i + 1));
-            } catch (MatchAlreadyStartedException ignored) {
+        // Preparing teams
+        IntStream.range(0, 20).forEach(i -> teamsQueue.add("Team" + i));
+
+        // Submit tasks to start matches
+        IntStream.range(0, 10).forEach(i -> service.submit(() -> {
+            String team1 = teamsQueue.poll();
+            String team2 = teamsQueue.poll();
+            if(team1 != null && team2 != null) {
+                try {
+                    matchManager.startMatch(team1, team2);
+                    System.out.println("Match started: " + team1 + " vs " + team2);
+                } catch (Exception ignored) {
+                }
             }
         }));
 
         service.shutdown();
         assertTrue(service.awaitTermination(1, TimeUnit.MINUTES));
+
+        // Assertions and logic to check the results
+        System.out.println("Matches count: " + matchRepository.countMatches());
         assertEquals(10, matchRepository.countMatches());
     }
 
     @Test
     @DisplayName("Race condition for the same match start")
-    public void raceConditionForSameMatchStart() throws InterruptedException {
+    void raceConditionForSameMatchStart() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         AtomicInteger successfulStarts = new AtomicInteger(0);
 
@@ -70,7 +84,7 @@ public class MatchConcurrencyTest {
 
     @Test
     @DisplayName("Concurrent score updates")
-    public void concurrentScoreUpdates() throws InterruptedException {
+    void concurrentScoreUpdates() throws InterruptedException {
         String homeTeam = "TeamConcurrency";
         String awayTeam = "TeamParallel";
         matchManager.startMatch(homeTeam, awayTeam);
@@ -90,7 +104,7 @@ public class MatchConcurrencyTest {
 
     @Test
     @DisplayName("Concurrent match finish")
-    public void concurrentMatchFinish() throws InterruptedException {
+    void concurrentMatchFinish() throws InterruptedException {
         String homeTeam = "TeamFinish";
         String awayTeam = "TeamEnd";
         matchManager.startMatch(homeTeam, awayTeam);
@@ -114,7 +128,7 @@ public class MatchConcurrencyTest {
 
     @Test
     @DisplayName("Concurrent score updates and match finish")
-    public void concurrentScoreUpdatesAndMatchFinish() throws InterruptedException {
+    void concurrentScoreUpdatesAndMatchFinish() throws InterruptedException {
         String homeTeam = "TeamEdge";
         String awayTeam = "TeamCase";
 
@@ -132,7 +146,7 @@ public class MatchConcurrencyTest {
 
     @Test
     @DisplayName("High load scenario for match starts")
-    public void highLoadMatchStarts() throws InterruptedException {
+    void highLoadMatchStarts() throws InterruptedException {
         int numberOfMatches = 1000;
         ExecutorService executorService = Executors.newCachedThreadPool();
         IntStream.range(0, numberOfMatches).parallel().forEach(i -> {
