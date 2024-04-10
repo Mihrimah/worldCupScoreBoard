@@ -1,4 +1,4 @@
-package org.worldcup.util;
+package org.worldcup.ui;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +8,8 @@ import org.worldcup.manager.ScoreManager;
 import org.worldcup.model.TeamType;
 import org.worldcup.repository.InMemoryMatchRepository;
 import org.worldcup.repository.MatchRepository;
+import org.worldcup.util.MatchSummaryGenerator;
+import org.worldcup.util.SimpleMatchKeyGenerator;
 
 import java.util.List;
 
